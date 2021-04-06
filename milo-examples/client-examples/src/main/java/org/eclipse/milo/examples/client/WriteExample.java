@@ -37,27 +37,25 @@ public class WriteExample implements ClientExample {
         // synchronous connect
         client.connect().get();
 
-        List<NodeId> nodeIds = ImmutableList.of(new NodeId(2, "HelloWorld/ScalarTypes/Int32"));
+//        List<NodeId> nodeIds = ImmutableList.of(new NodeId(2, "HelloWorld/ScalarTypes/Int32"));
+        List<NodeId> nodeIds = ImmutableList.of(new NodeId(2, "FE6.AFSM.AFSM010_WriteRFID"));
 
-        for (int i = 0; i < 10; i++) {
-            Variant v = new Variant(i);
+        Variant v = new Variant("123456");
 
-            // don't write status or timestamps
-            DataValue dv = new DataValue(v, null, null);
+        // don't write status or timestamps
+        DataValue dv = new DataValue(v, null, null);
 
-            // write asynchronously....
-            CompletableFuture<List<StatusCode>> f =
+        // write asynchronously....
+        CompletableFuture<List<StatusCode>> f =
                 client.writeValues(nodeIds, ImmutableList.of(dv));
 
-            // ...but block for the results so we write in order
-            List<StatusCode> statusCodes = f.get();
-            StatusCode status = statusCodes.get(0);
+        // ...but block for the results so we write in order
+        List<StatusCode> statusCodes = f.get();
+        StatusCode status = statusCodes.get(0);
 
-            if (status.isGood()) {
-                logger.info("Wrote '{}' to nodeId={}", v, nodeIds.get(0));
-            }
+        if (status.isGood()) {
+            logger.info("it means successfully Wrote '{}' to nodeId={}, statusCodes = {}", v, nodeIds.get(0),statusCodes.toString());
         }
-
         future.complete(client);
     }
 

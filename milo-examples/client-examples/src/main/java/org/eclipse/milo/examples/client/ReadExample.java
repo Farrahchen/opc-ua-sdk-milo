@@ -49,18 +49,20 @@ public class ReadExample implements ClientExample {
         readServerStateAndTime(client).thenAccept(values -> {
             DataValue v0 = values.get(0);
             DataValue v1 = values.get(1);
-
-            logger.info("State={}", ServerState.from((Integer) v0.getValue().getValue()));
-            logger.info("CurrentTime={}", v1.getValue().getValue());
+            DataValue v2 = values.get(2);
+            logger.info("AFSM010={}", v0.getValue().getValue());
+            logger.info("AFSM010_WriteRFID={}", v1.getValue().getValue());
+            logger.info("AFSM010_ReadRFID={}", v2.getValue().getValue());
 
             future.complete(client);
         });
     }
 
     private CompletableFuture<List<DataValue>> readServerStateAndTime(OpcUaClient client) {
-        List<NodeId> nodeIds = ImmutableList.of(
-            Identifiers.Server_ServerStatus_State,
-            Identifiers.Server_ServerStatus_CurrentTime);
+        NodeId nodeId_Tag1 = new NodeId(2, "FE6.AFSM.AFSM010");
+        NodeId nodeId_Tag2 = new NodeId(2, "FE6.AFSM.AFSM010_WriteRFID");
+        NodeId nodeId_Tag3 = new NodeId(2, "FE6.AFSM.AFSM010_ReadRFID");
+        List<NodeId> nodeIds = ImmutableList.of(nodeId_Tag1,nodeId_Tag2,nodeId_Tag3);
 
         return client.readValues(0.0, TimestampsToReturn.Both, nodeIds);
     }
