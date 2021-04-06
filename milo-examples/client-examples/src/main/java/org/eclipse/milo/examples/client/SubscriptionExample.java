@@ -19,6 +19,7 @@ import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscription;
 import org.eclipse.milo.opcua.stack.core.AttributeId;
 import org.eclipse.milo.opcua.stack.core.Identifiers;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
+import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
 import org.eclipse.milo.opcua.stack.core.types.builtin.QualifiedName;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UInteger;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.MonitoringMode;
@@ -52,8 +53,9 @@ public class SubscriptionExample implements ClientExample {
 
         // subscribe to the Value attribute of the server's CurrentTime node
         ReadValueId readValueId = new ReadValueId(
-            Identifiers.Server_ServerStatus_CurrentTime,
-            AttributeId.Value.uid(), null, QualifiedName.NULL_VALUE
+//            Identifiers.Server_ServerStatus_CurrentTime,
+                new NodeId(2, "FE6.AFSM.AFSM010_WriteRFID"),
+                AttributeId.Value.uid(), null, QualifiedName.NULL_VALUE
         );
 
         // IMPORTANT: client handle must be unique per item within the context of a subscription.
@@ -62,29 +64,29 @@ public class SubscriptionExample implements ClientExample {
         UInteger clientHandle = subscription.nextClientHandle();
 
         MonitoringParameters parameters = new MonitoringParameters(
-            clientHandle,
-            1000.0,     // sampling interval
-            null,       // filter, null means use default
-            uint(10),   // queue size
-            true        // discard oldest
+                clientHandle,
+                1000.0,     // sampling interval
+                null,       // filter, null means use default
+                uint(10),   // queue size
+                true        // discard oldest
         );
 
         MonitoredItemCreateRequest request = new MonitoredItemCreateRequest(
-            readValueId,
-            MonitoringMode.Reporting,
-            parameters
+                readValueId,
+                MonitoringMode.Reporting,
+                parameters
         );
 
         // when creating items in MonitoringMode.Reporting this callback is where each item needs to have its
         // value/event consumer hooked up. The alternative is to create the item in sampling mode, hook up the
         // consumer after the creation call completes, and then change the mode for all items to reporting.
         UaSubscription.ItemCreationCallback onItemCreated =
-            (item, id) -> item.setValueConsumer(this::onSubscriptionValue);
+                (item, id) -> item.setValueConsumer(this::onSubscriptionValue);
 
         List<UaMonitoredItem> items = subscription.createMonitoredItems(
-            TimestampsToReturn.Both,
-            newArrayList(request),
-            onItemCreated
+                TimestampsToReturn.Both,
+                newArrayList(request),
+                onItemCreated
         ).get();
 
         for (UaMonitoredItem item : items) {
@@ -92,8 +94,8 @@ public class SubscriptionExample implements ClientExample {
                 logger.info("item created for nodeId={}", item.getReadValueId().getNodeId());
             } else {
                 logger.warn(
-                    "failed to create item for nodeId={} (status={})",
-                    item.getReadValueId().getNodeId(), item.getStatusCode());
+                        "failed to create item for nodeId={} (status={})",
+                        item.getReadValueId().getNodeId(), item.getStatusCode());
             }
         }
 
@@ -103,9 +105,8 @@ public class SubscriptionExample implements ClientExample {
     }
 
     private void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
-        logger.info(
-            "subscription value received: item={}, value={}",
-            item.getReadValueId().getNodeId(), value.getValue());
+        logger.info("===== >  here is callbacks ... ");
+        logger.info("subscription value received: item={}, value={}",item.getReadValueId().getNodeId(), value.getValue());
     }
 
 }
