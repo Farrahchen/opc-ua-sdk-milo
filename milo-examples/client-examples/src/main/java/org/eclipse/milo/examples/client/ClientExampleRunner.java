@@ -45,7 +45,7 @@ public class ClientExampleRunner {
     private final boolean serverRequired;
 
     public ClientExampleRunner(ClientExample clientExample) throws Exception {
-        this(clientExample, true);
+        this(clientExample, false);
     }
 
     public ClientExampleRunner(ClientExample clientExample, boolean serverRequired) throws Exception {

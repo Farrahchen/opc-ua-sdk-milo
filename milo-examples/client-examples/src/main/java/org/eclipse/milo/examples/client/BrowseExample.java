@@ -52,12 +52,12 @@ public class BrowseExample implements ClientExample {
 
     private void browseNode(String indent, OpcUaClient client, NodeId browseRoot) {
         BrowseDescription browse = new BrowseDescription(
-            browseRoot,
-            BrowseDirection.Forward,
-            Identifiers.References,
-            true,
-            uint(NodeClass.Object.getValue() | NodeClass.Variable.getValue()),
-            uint(BrowseResultMask.All.getValue())
+                browseRoot,
+                BrowseDirection.Forward,
+                Identifiers.References,
+                true,
+                uint(NodeClass.Object.getValue() | NodeClass.Variable.getValue()),
+                uint(BrowseResultMask.All.getValue())
         );
 
         try {
@@ -70,7 +70,7 @@ public class BrowseExample implements ClientExample {
 
                 // recursively browse to children
                 rd.getNodeId().toNodeId(client.getNamespaceTable())
-                    .ifPresent(nodeId -> browseNode(indent + "  ", client, nodeId));
+                        .ifPresent(nodeId -> browseNode(indent + "  ", client, nodeId));
             }
         } catch (InterruptedException | ExecutionException e) {
             logger.error("Browsing nodeId={} failed: {}", browseRoot, e.getMessage(), e);

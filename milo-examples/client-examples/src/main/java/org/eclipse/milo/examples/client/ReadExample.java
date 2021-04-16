@@ -29,7 +29,7 @@ public class ReadExample implements ClientExample {
     public static void main(String[] args) throws Exception {
         ReadExample example = new ReadExample();
 
-        new ClientExampleRunner(example, true).run();
+        new ClientExampleRunner(example, false).run();
     }
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -52,7 +52,7 @@ public class ReadExample implements ClientExample {
             DataValue v2 = values.get(2);
             logger.info("AFSM010={}", v0.getValue().getValue());
             logger.info("AFSM010_WriteRFID={}", v1.getValue().getValue());
-            logger.info("AFSM010_ReadRFID={}", v2.getValue().getValue());
+            logger.info("AFSM010_SyncFlag={}", v2.getValue().getValue());
 
             future.complete(client);
         });
@@ -61,7 +61,7 @@ public class ReadExample implements ClientExample {
     private CompletableFuture<List<DataValue>> readServerStateAndTime(OpcUaClient client) {
         NodeId nodeId_Tag1 = new NodeId(2, "FE6.AFSM.AFSM010");
         NodeId nodeId_Tag2 = new NodeId(2, "FE6.AFSM.AFSM010_WriteRFID");
-        NodeId nodeId_Tag3 = new NodeId(2, "FE6.AFSM.AFSM010_ReadRFID");
+        NodeId nodeId_Tag3 = new NodeId(2, "FE6.AFSM.AFSM010_SyncFlag");
         List<NodeId> nodeIds = ImmutableList.of(nodeId_Tag1,nodeId_Tag2,nodeId_Tag3);
 
         return client.readValues(0.0, TimestampsToReturn.Both, nodeIds);

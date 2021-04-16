@@ -38,9 +38,12 @@ public class WriteExample implements ClientExample {
         client.connect().get();
 
 //        List<NodeId> nodeIds = ImmutableList.of(new NodeId(2, "HelloWorld/ScalarTypes/Int32"));
-        List<NodeId> nodeIds = ImmutableList.of(new NodeId(2, "FE6.AFSM.AFSM010_WriteRFID"));
+        List<NodeId> nodeIds = ImmutableList.of(new NodeId(2, "FE6.AFSM.AFSM010_SyncFlag"));
+        Object o = 1 ;
+        short s = Short.valueOf(o.toString());
+//        Boolean s = Boolean.valueOf(o.toString());
 
-        Variant v = new Variant("123456");
+        Variant v = new Variant(s);
 
         // don't write status or timestamps
         DataValue dv = new DataValue(v, null, null);
@@ -55,7 +58,10 @@ public class WriteExample implements ClientExample {
 
         if (status.isGood()) {
             logger.info("it means successfully Wrote '{}' to nodeId={}, statusCodes = {}", v, nodeIds.get(0),statusCodes.toString());
+        }else{
+            logger.error("it means failed Wrote '{}' to nodeId={}, statusCodes = {}", v, nodeIds.get(0),statusCodes.toString());
         }
+
         future.complete(client);
     }
 
